@@ -1,0 +1,13 @@
+@import "../public/assets/css/vendors/bootstrap.css";
+@import "../public/assets/css/style.css";
+@import "../public/assets/css/vendors/jquery.dataTables.css";
+@import "../public/assets/css/vendors/dataTables.bootstrap5.css";
+
+form .ng-invalid.ng-touched{
+    border-color: #fc564a;
+}
+.ng-valid.ng-touched{
+    border-color: #65c15c;
+}
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

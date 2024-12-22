@@ -1,0 +1,69 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-7">
+            <img class="bg-img-cover bg-center" appBgImage="../assets/images/login/2.jpeg" alt="looginpage">
+        </div>
+        <div class="col-xl-5 p-0">
+            <div class="login-card login-dark">
+                <div>
+                    <div>
+                        <a class="logo text-start" [routerLink]="['/']" routerLinkActive="router-link-active">
+                            <img class="img-fluid for-light" src="../assets/images/logo/logo.png" alt="looginpage">
+                            <img class="img-fluid for-dark" src="../assets/images/logo/logo_dark.png" alt="looginpage">
+                        </a>
+                    </div>
+                    <div class="login-main">
+                        <form [@flipInXOnEnter] class="theme-form" [formGroup]="LoginForm" *ngIf="ActiveForm() == 1" (ngSubmit)="submitLogin()">
+                            <h4>Sign in </h4>
+                            <div class="form-group">
+                                <label class="col-form-label">Email</label>
+                                <input formControlName="email" class="form-control" type="email" name="email"
+                                    placeholder="example@example.com">
+                                <app-form-error-msg [touched]="LoginForm.get('email')?.touched"
+                                    [errors]="LoginForm.get('email')?.errors || []"></app-form-error-msg>
+                                    <div *ngIf="error()" class="invalid-feedback" style="display:block;">{{ error() }}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Password</label>
+                                <div class="form-input position-relative">
+                                    <input class="form-control" type="password" formControlName="password"
+                                        name="password" placeholder="*********">
+                                        <span class="show-pass" onclick="toggle()"><i class="fa-regular fa-eye" onclick="myFunction(this)"></i></span>
+                                    <app-form-error-msg [touched]="LoginForm.get('password')?.touched"
+                                        [errors]="LoginForm.get('password')?.errors || []"></app-form-error-msg>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0">
+                                <div class="checkbox p-0">
+                                    <input id="checkbox1" #Remember type="checkbox">
+                                    <label class="text-muted" for="checkbox1">Remember password</label>
+                                </div>
+                                <a class="link" (click)="ActiveForm.set(2)">Forgot password?</a>
+                                <button [disabled]="Form_loading()" class="btn btn-primary btn-block w-100" type="submit">
+                                <ng-content *ngIf="!Form_loading()">Sign in </ng-content>
+                                <ng-content *ngIf="Form_loading()">Loading ...</ng-content>
+                                    
+                                </button>
+                            </div>
+                        </form>
+                        <form [@flipInXOnEnter] class="theme-form" [formGroup]="ForgotForm" *ngIf="ActiveForm() == 2">
+                            <h4>Reset Your Password</h4>
+                            <div class="form-group">
+                                <label class="col-form-label">Email</label>
+                                <input formControlName="email" class="form-control" type="email" name="email"
+                                    placeholder="example@example.com">
+                                <app-form-error-msg [touched]="LoginForm.get('email')?.touched"
+                                    [errors]="LoginForm.get('email')?.errors || []"></app-form-error-msg>
+                            </div>   
+                            <div class="form-group mb-0">                                
+                                <button class="btn btn-primary btn-block w-100" type="submit">Done</button>
+                            </div>   
+                            <p class="mt-4 mb-0 text-center">Already have an password?<a class="ms-2" (click)="ActiveForm.set(1)">Sign in</a></p>                                               
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>    
+</div>
