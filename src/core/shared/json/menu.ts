@@ -8,13 +8,13 @@ export const Side_menu : Array<Sidebar> = [
                 title : 'DashBoad',
                 is_active : false,
                 link : '',
-                submenu :[
-                    {
-                        title : 'test',
-                        is_active : false,
-                        link : ''
-                    }
-                ]
+                submenu :[]
+            },
+            {
+                title : 'Attribute',
+                is_active : false,
+                link : '/attribute',
+                submenu : []
             }
         ]
     },

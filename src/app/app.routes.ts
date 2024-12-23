@@ -4,6 +4,7 @@ import { authGuard, authNotGuard } from '../core/auth/auth.guard';
 
 export const Pages: Routes = [
     { path : '', loadComponent : () => import('../app/pages/dashboad/dashboad.component').then(m=>m.DashboadComponent) },
+    { path : 'attribute', loadComponent : () => import('../app/pages/attribute/attribute.component').then(m=>m.AttributeComponent) },
 ]
 
 export const routes: Routes = [

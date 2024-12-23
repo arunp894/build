@@ -1,3 +1,10 @@
 .modal-content{
-    width : 50%
+    width : 50%;
+}
+.modal-footer-custom{
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    gap: 2px;
+    border-top: 1px solid #efefef;
 }

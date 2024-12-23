@@ -212,20 +212,15 @@
     </script>
     <script class="empty-template" type="text/x-handlebars-template"><div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div></script>
   </div>
-  <ng-template #content let-modal>    
-    <div class="modal-body">    
-      <div class="container">
-        <div class="row">
-          <div class="col-6">
-            <button class="btn btn-square btn-success" style="width:100%" (click)="logout();modal.dismiss('Cross click');">
-              <ng-content *ngIf="loading() == 1">Conform</ng-content>
-              <ng-content *ngIf="loading() == 2">Loading...</ng-content>              
-              </button>
-          </div>  
-          <div class="col-6">
-            <button class="btn btn-square btn-danger" style="width:100%" (click)="modal.dismiss('Cross click')">Cancel</button>
-          </div>            
-        </div>
-      </div> 
+  <ng-template #content let-modal>   
+    <div class="modal-body">
+      <p>Are you sure you want to logout ?</p>
+    </div> 
+    <div class="modal-footer-custom">       
+      <button class="btn btn-square btn-success" style="width:100%" (click)="logout();modal.dismiss('Cross click');">
+        <ng-content *ngIf="loading() == 1">Yes</ng-content>
+        <ng-content *ngIf="loading() == 2">Loading...</ng-content>              
+      </button> 
+      <button class="btn btn-square btn-danger" style="width:100%" (click)="modal.dismiss('Cross click')">Cancel</button>           
     </div>    
   </ng-template>

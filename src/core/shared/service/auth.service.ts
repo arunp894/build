@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ENV } from '../../../env';
 import { AuthStateModel, LoginModel } from '../interface/auth';
 
 @Injectable({
@@ -12,6 +11,10 @@ export class AuthService {
   constructor(private http:HttpClient) { }
   
   Login(payload: LoginModel): Observable<AuthStateModel> {
-    return this.http.post<AuthStateModel>(`${ENV.url}endpoints/login_api/`,payload);
+    return this.http.post<AuthStateModel>(`login_api/`,payload);
+  }
+
+  RefereshToken(refresh:string) : Observable<{ access : string }>{
+    return this.http.post<{ access : string }>('api/token/refresh/',{ refresh : refresh })
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { Action, Selector, State, StateContext, Store } from "@ngxs/store"
 import { AuthStateModel } from "../../interface/auth";
-import { Login, Logout } from "../action/auth.action";
+import { Login, Logout, RefereshToken } from "../action/auth.action";
 import { AuthService } from "../../service/auth.service";
 import { tap } from "rxjs";
 
@@ -30,8 +30,29 @@ export class AuthState {
       return state.loading;
     }
     @Selector()
+    static access(state:AuthStateModel) : string {
+        return 'Bearer '+state.access
+    }
+    @Selector()
+    static refresh(state:AuthStateModel) : string {
+        return state.refresh
+    }
+    @Selector()
     static error(state: AuthStateModel):string | null {        
       return state.error;
+    }
+
+    @Action(RefereshToken)
+    refereshToken(ctx: StateContext<AuthStateModel>){
+        return this.auth.RefereshToken(ctx.getState().refresh).pipe(
+            tap({
+                next : (result) => {
+                    ctx.patchState({
+                        access :  result.access
+                    })
+                }
+            })
+        )
     }
     @Action(Login)
     login(ctx: StateContext<AuthStateModel>, action: Login){

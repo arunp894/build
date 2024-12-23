@@ -11,12 +11,4 @@ import { DatatableService } from '../../../core/shared/lib/datatable.service';
 })
 export class DashboadComponent {
 
-  count = signal(1)
-
-  constructor(private table : DatatableService){}
-
-  ngAfterContentInit(): void {   
-    const instance = this.table.init('#example')
-    console.log(instance)
-  }
 }

@@ -1,0 +1,101 @@
+<div class="container-fluid">
+    <div class="page-title">
+      <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-select" >
+                        <option>Text</option>
+                        <option>File</option>
+                        <option>Textarea</option>
+                        <option>Select</option>
+                        <option>Multi Select</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" placeholder="Name">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" (click)="openEnd(content)">Add</button>
+            </div>
+        </div>                
+      </div>
+    </div>
+</div>
+<div class="container-fluid datatable-init">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="datatable-init">
+                        <div class="container-fluid">    
+                            <div class="row">
+                              <table id="example" class="display table-striped border dataTable" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Type</th>                                        
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>                                
+                                </table>        
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #content let-offcanvas>
+    <div class="offcanvas-header pb-0">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Attribute</h5>
+        <button class="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+    </div>	
+	<div class="offcanvas-body custom-input">
+		<form class="row g-3" [formGroup]="AddEditForm" (ngSubmit)="submit()">
+            <div class="col-12"> 
+              <label class="form-label">Name</label>
+              <input class="form-control" formControlName="name" type="text" placeholder="Name">
+            </div>
+            <div class="col-12">
+              <label class="form-label" >Type</label>
+              <select class="form-select"(change)="onChange($event)" formControlName="field_type">
+                <option selected=""></option>                
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="select">Select</option>
+                <option value="multiselect">MultiSelct</option>
+                <option value="date">Date</option>                
+                <option value="file">File</option>
+              </select>
+            </div>
+   
+            <div formArrayName="values" class="col-12">
+                @if(enable){
+                    <label class="form-label">Values</label>
+                    @for (item of valueArray.controls; track $index; let i = $index) { 
+                        <div class="row mt-1">
+                            <div class="col-6">
+                                <input [formControlName]="i" class="form-control"  type="text" placeholder="Name">
+                            </div>
+                            <div class="col-6 d-flex justify-content-around ">
+                                <button class="btn btn-primary" (click)="addValueControl()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                <button class="btn btn-danger" *ngIf="i>0" (click)="removeValueControl(i)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>  
+                        </div>                        
+                    }
+                }                                              
+              </div>
+            <div class="col-12">
+              <button class="btn btn-light me-2" type="submit" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+              <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+	</div>
+</ng-template>

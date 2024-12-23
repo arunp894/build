@@ -25,7 +25,7 @@ export class HeaderComponent {
   }
 
   open(content: TemplateRef<any>) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',centered : true })
+    this.modalService.open(content, { size : 'sm',centered : true })
   }
 
   logout(){
