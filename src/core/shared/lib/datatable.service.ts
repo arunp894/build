@@ -18,8 +18,11 @@ export class DatatableService {
       lengthMenu: [5, 10, 25, 100],
       pageLength: 10,
       searchDelay: 500,
-      processing: true,
-      serverSide : false
+      processing: false,
+      serverSide : false,
+      ajax : function(data :any, callback:any, settings:any){
+
+      }
     }
   }
   init(api:string,selecter : string,options: Record<string, any> = {}):any{
@@ -37,7 +40,7 @@ export class DatatableService {
   }
 
   onPageRender(){
-    this.http.get(this.url).subscribe({
+    this.http.post(this.url,{}).subscribe({
       next : (value:any)=>{
           this.renderData(value.results)
       },

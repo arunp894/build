@@ -1,17 +1,21 @@
 <div *ngIf="ErrorLength && touched" class="invalid-feedback" style="display:block;">
     <ng-container *ngFor="let error of errors | keyvalue">
-        @if (error.key != 'required' && error.key != 'min') {
-            @switch (error.key) {
-                @case ('email') {
-                    Invalide email.
-                }
-                @case ('required') {
-                    Field is required.
-                }
-                @case ('min') {
-                    Required min value.
-                }
-            }
+        @switch (error.key) {
+        @case ('email') {
+        Invalide email.
+        }
+        @case ('required') {
+        Field is required.
+        }
+        @case ('min') {
+        Required min value.
+        }
+        @case ('serverError'){
+        {{ error.value }}
+        }
+        @default {
+        {{ error | json}}
+        }
         }
     </ng-container>
 </div>

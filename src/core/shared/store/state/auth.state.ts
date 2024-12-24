@@ -5,6 +5,7 @@ import { AuthStateModel } from "../../interface/auth";
 import { Login, Logout, RefereshToken } from "../action/auth.action";
 import { AuthService } from "../../service/auth.service";
 import { tap } from "rxjs";
+import Swal from "sweetalert2";
 
 @State<AuthStateModel>({
     name: "auth",
@@ -72,7 +73,13 @@ export class AuthState {
                         user : result.user,
                         loading : false
                     })
-                    this.router.navigateByUrl('/')
+                    Swal.fire({
+                        title: "Login",
+                        icon: "success",
+                        draggable: true
+                      }).then(() => {
+                          this.router.navigateByUrl('/')
+                      });
                 },
                 error : error => {                    
                     const state = ctx.getState();

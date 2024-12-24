@@ -4,7 +4,7 @@
 @import "../public/assets/css/vendors/dataTables.bootstrap5.css";
 // @import "../public/assets/css/fontawesome.css";
 @import "../public/assets/css/responsive.css";
-
+// @import "../node_modules/@swimlane/ngx-datatable/themes/bootstrap.css";
 form .ng-invalid.ng-touched{
     border-color: #fc564a;
 }
@@ -18,4 +18,64 @@ form .ng-invalid.ng-touched{
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/offcanvas';
+@import "@ng-select/ng-select/themes/default.theme.css";
 
+.ngx-datatable{
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    .datatable-header {
+        height: auto !important;
+    }
+}
+.ngx-datatable.fixed-header .datatable-header .datatable-header-inner .datatable-header-cell{
+    padding: 10px 10px;
+    
+    
+    & .datatable-header-cell-label{
+        text-transform: capitalize;
+        color: rgb(33, 37, 41);
+        cursor : pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
+}
+.ngx-datatable .datatable-footer{
+    & .datatable-footer-inner {
+        justify-content: space-between;
+        padding: 5px 20px;
+    }    
+}
+.ngx-datatable .datatable-body{
+    & datatable-body-cell{
+        padding: 8px 10px;
+        & .datatable-body-cell-label{
+            // height: 20px;
+        }
+    }
+    & .datatable-body-row.datatable-row-odd{
+        background-color: #f6f7f9;
+    }
+    & .datatable-body-row.datatable-row-even{
+        background-color: #ffffff;
+    }
+    & .datatable-body-row:hover{
+        background-color: #e2e3e5;
+    }
+    & .datatable-body-row {
+        border-color : #e2e3e5;
+        border-style: solid;
+        border-width: 0;
+        & .datatable-body-cell{
+            border-top: 1px solid rgba(0, 0, 0, 0.15);
+            font-weight: 400;
+            letter-spacing: 0.5;
+            font-size: 14px;
+            color: rgb(64, 64, 64);
+            text-align: left;
+        }
+    }
+}
+
+//Sweet alert
+.swal2-container button{
+    color: white;
+}

@@ -1,0 +1,62 @@
+<ngx-datatable [rowHeight]="'auto'" 
+[columnMode]="'force'" 
+[loadingIndicator]="true"
+[externalPaging]="true"
+[externalSorting]="true" 
+(sort)="onSort($event)" 
+(page)="setPage($event)"   
+[footerHeight]="50"                      
+[limit]="10"  
+[columns]="columns()" 
+[rows]="Ngx_datatable().rows"
+[count]="Ngx_datatable().totalElements">
+@for (item of columns(); track $index) {
+    @if( item?.cellTemplate ){
+        <ngx-datatable-column [name]="item.name" [prop]="item.prop" [cellTemplate]="TemplateRef(item.cellTemplate)"></ngx-datatable-column>
+    }
+    @else {
+        <ngx-datatable-column [name]="item.name" [prop]="item.prop"></ngx-datatable-column>
+    }
+}
+<ngx-datatable-footer>
+    <ng-template ngx-datatable-footer-template let-rowCount="rowCount" let-pageSize="pageSize"
+      let-selectedCount="selectedCount" let-curPage="curPage" let-offset="offset">
+      <div class="w-full flex justify-between">
+        <div class="">
+          {{ 'Total Record' }} : {{ Ngx_datatable().totalElements }}
+        </div>                                
+      </div>      
+      <nav aria-label="Page navigation example" *ngIf="rowCount > pageSize">
+        <ul class="pagination pagination-secondary pagin-border-secondary" >
+          <li class="page-item">
+            <a class="page-link" (click)="footerpageset(Ngx_datatable().pageNumber)" [ngClass]="{'disabled': Ngx_datatable().pageNumber <= 0 }" aria-label="Previous">
+              <span aria-hidden="true">«</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          <li *ngFor="let item of pagination(); let i=index" class="page-item">
+            <a class="page-link" (click)="footerpageset(item)" [ngClass]="{ 'active' : item == Ngx_datatable().pageNumber,'disabled': item == Ngx_datatable().pageNumber }">{{ item + 1 }}</a>
+          </li>                                      
+          <li class="page-item">
+            <a (click)="footerpageset(Ngx_datatable().pageNumber)" [ngClass]="{'disabled': pageSize*(Ngx_datatable().pageNumber) > rowCount }" class="page-link" aria-label="Next">
+              <span aria-hidden="true">»</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+    </nav>
+    </ng-template>
+  </ngx-datatable-footer>
+</ngx-datatable>
+<ng-template #empty let-row="row" let-value="value" ngx-datatable-cell-template>
+    {{ value }}
+</ng-template>
+<ng-template #actionTemplate let-row="row" let-value="value" ngx-datatable-cell-template>
+    <div class="d-flex gap-1">
+      <button (click)="edit(row)" class="btn-pill btn-outline-primary  border border-primary"><i class="fa fa-edit" aria-hidden="true"></i></button>
+      <button (click)="delete(row)" class="btn-pill btn-outline-danger border border-danger"><i class="fa fa-trash" aria-hidden="true"></i></button>
+  </div>  
+</ng-template>
+<ng-template #category let-row="row" let-value="value" ngx-datatable-cell-template>
+  {{ value.name }}
+</ng-template>

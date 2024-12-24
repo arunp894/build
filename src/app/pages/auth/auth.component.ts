@@ -26,6 +26,7 @@ export class AuthComponent {
   Form_loading = select(AuthState.loading)
   error = select(AuthState.error)
   ActiveForm = signal(1)
+  
   @ViewChild('Remember') Remember!: ElementRef;
 
   LoginForm = new FormGroup({

@@ -1,0 +1,79 @@
+<div class="container-fluid">
+    <div class="page-title">
+      
+    </div>
+  </div>
+  <div class="container-fluid datatable-init">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <form [formGroup]="searchForm">
+                        <div class="row">
+                          <div class="col-sm-2">
+                            <ng-select  [searchable]="true" [formControlName]="'category'" placeholder="Category" [multiple]="false">
+                              <ng-option *ngFor="let option of category()" [value]="option.id">{{ option.name }}</ng-option>
+                            </ng-select>
+                          </div>
+                          <div class="col-sm-2">
+                            <input class="form-control" type="text" formControlName="name" placeholder="Name">
+                          </div>
+                          <div class="col-sm-1">
+                            <button class="btn btn-primary" (click)="search()"><i class="fa fa-search"></i></button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary" (click)="openEnd(content)"><i class="fa fa-plus"
+                            aria-hidden="true"></i>Add</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <app-list [columns]="columns()" [Ngx_datatable]="table()" [pagination]="pagination()"
+                        (editEvent)="edit($event)" (deleteEvent)="delete($event)" (footerpagesetEvent)="setPage($event)"
+                        (onSortEvent)="setPage($event)"></app-list>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <ng-template #content let-offcanvas>
+    <div class="offcanvas-header pb-0">
+      <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Sub Category</h5>
+      <button class="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"
+        (click)="offcanvas.dismiss('Cross click')"></button>
+    </div>
+    <div class="offcanvas-body custom-input">
+      <form class="row g-3" [formGroup]="AddEditForm" (ngSubmit)="submit()">
+        <div class="col-12">
+            <ng-select  [searchable]="true" [formControlName]="'category'" placeholder="Category" [multiple]="false">
+                <ng-option *ngFor="let option of category()" [value]="option.id">{{ option.name }}</ng-option>
+              </ng-select>
+              <app-form-error-msg [touched]="AddEditForm.get('category')?.touched"
+            [errors]="AddEditForm.get('category')?.errors || []"></app-form-error-msg>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Name</label>
+          <input class="form-control" formControlName="name" type="text" placeholder="Name">
+          <app-form-error-msg [touched]="AddEditForm.get('name')?.touched"
+            [errors]="AddEditForm.get('name')?.errors || []"></app-form-error-msg>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description" type="text" placeholder="Description"></textarea>
+          <app-form-error-msg [touched]="AddEditForm.get('description')?.touched"
+            [errors]="AddEditForm.get('description')?.errors || []"></app-form-error-msg>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-light me-2" (click)="offcanvas.dismiss('Cross click')" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>

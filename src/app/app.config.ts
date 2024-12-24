@@ -6,10 +6,13 @@ import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AuthState } from '../core/shared/store/state/auth.state';
 import { HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { catchError, concatMap, Observable, retry, retryWhen, switchMap, tap } from 'rxjs';
+import { catchError, concatMap, Observable, retry, retryWhen, switchMap, tap, throwError } from 'rxjs';
 import { ENV } from '../env';
 import { Logout, RefereshToken } from '../core/shared/store/action/auth.action';
 import Swal from 'sweetalert2'
+import { AttributeState } from '../core/shared/store/state/attribute.state';
+import { CategoryState } from '../core/shared/store/state/category.state';
+import { SubcategoryState } from '../core/shared/store/state/subcategory.stste';
 
 export let retryCount = 0;
 export const retryWaitMilliSeconds = 1000;
@@ -18,17 +21,22 @@ export const httpInterceptorFn: HttpInterceptorFn = (req, next):Observable<HttpE
   const route = inject(Router)
   const store = inject(Store)
   const ngzone  = inject(NgZone);
-  const auth = select(AuthState.access)
-
-
-  const clone = req.clone({
+  const auth = select(AuthState.access)  
+  
+  let clone = req.clone({
     url: `${ENV.url}${req.url}`,
     withCredentials : true,
     setHeaders: {
       Authorization: auth(),
     },
-  })
-
+  })  
+  if('login_api/' == req.url){
+    clone = req.clone({
+      url: `${ENV.url}${req.url}`,
+      withCredentials : true,      
+    })
+  }
+  
   const handleLogout = () => {
     ngzone.runOutsideAngular(() => {
       Swal.fire({
@@ -80,13 +88,12 @@ export const httpInterceptorFn: HttpInterceptorFn = (req, next):Observable<HttpE
 };
 
 
-  return next(clone).pipe(
-    
-    catchError((error: HttpErrorResponse):Observable<HttpEvent<any>>=> {      
+  return next(clone).pipe(    
+    catchError((error: HttpErrorResponse):Observable<HttpEvent<any>> => {      
       if (error.status === 403) {       
         return handle403Error(error); 
       }
-      handleError(error);
+      // handleError(error);
       return throwError(() => error);
     }),
     tap({
@@ -99,7 +106,7 @@ export const httpInterceptorFn: HttpInterceptorFn = (req, next):Observable<HttpE
         if (error.status == 403){          
           handleLogout();          
         }else{
-          handleError(error);
+          // handleError(error);
         }
       }
     })
@@ -114,7 +121,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimations(),
     provideStore([
-      AuthState
+      AuthState,
+      AttributeState,
+      CategoryState,
+      SubcategoryState
     ]),
     withNgxsStoragePlugin({
       keys : [
@@ -123,15 +133,4 @@ export const appConfig: ApplicationConfig = {
     })
   ]
 };
-function of(error: any): any {
-  throw new Error('Function not implemented.');
-}
-
-function throwError(error: any): any {
-  throw new Error('Function not implemented.');
-}
-
-function delay(retryWaitMilliSeconds: number): import("rxjs").OperatorFunction<any, unknown> {
-  throw new Error('Function not implemented.');
-}
 

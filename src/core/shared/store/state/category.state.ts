@@ -1,12 +1,11 @@
-import { Action,  Selector, State, StateContext, Store } from "@ngxs/store";
-import { AttributeCreateModel } from "../../interface/attribute";
-import { Injectable } from "@angular/core";
-import { AttributeCreate, AttributeDelete, AttributeEdit, AttributeList, } from "../action/attribute.action";
-import { AttributeService } from "../../service/attribute.service";
-import { Observable, tap } from "rxjs";
+import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { NgxDatatable, Page } from "../../interface/ngxdatatable";
+import { Injectable } from "@angular/core";
+import { CategoryService } from "../../service/category.service";
+import { CategotyCreate, CategotyDelete, CategotyEdit, CategotyList } from "../action/category.action";
+import { Observable } from "rxjs";
 
-export interface AttributeStateModel{   
+export interface CategoryStateModel{
     table : NgxDatatable,
     filter : {
         page : number,
@@ -20,8 +19,8 @@ export interface AttributeStateModel{
     }
 }
 
-@State<AttributeStateModel>({
-    name: "attribute",
+@State<CategoryStateModel>({
+    name: "Category",
     defaults: {              
         table : new Page(),
         filter : {
@@ -37,24 +36,25 @@ export interface AttributeStateModel{
     }
 })
 @Injectable()
-export class AttributeState {
+export class CategoryState { 
 
-    constructor(private store: Store, public attribute : AttributeService){ }
+    constructor(private store: Store, public category : CategoryService){ }
 
     @Selector()
-    static rows(state : AttributeStateModel){
+    static rows(state : CategoryStateModel){
         return state.table.rows
     }
     @Selector()
-    static table(state : AttributeStateModel){
+    static table(state : CategoryStateModel){
         return state.table
     }
     @Selector()
-    static form(state : AttributeStateModel){
+    static form(state : CategoryStateModel){
         return state.form
     }
+
     @Selector()
-    static pagination(state : AttributeStateModel): Array<number>{
+    static pagination(state : CategoryStateModel): Array<number>{
         const pagination = [];
         const totalPages = Math.ceil(state.table.totalElements / state.table.size); // Ensure we round up for total pages
         let currentPage = state.table.pageNumber;
@@ -76,8 +76,8 @@ export class AttributeState {
         return pagination;
     }
 
-    @Action(AttributeList)
-    attributelist(ctx : StateContext<AttributeStateModel>, action : AttributeList){        
+    @Action(CategotyList)
+    CategotyList(ctx : StateContext<CategoryStateModel>, action : CategotyList){        
         ctx.patchState({
             filter : {
                 ...ctx.getState().filter,
@@ -88,7 +88,7 @@ export class AttributeState {
             }
         })
         
-        return this.attribute.list(ctx.getState().filter).subscribe({
+        return this.category.list(ctx.getState().filter).subscribe({
             next : (data) => {
                 ctx.patchState({
                     table : {
@@ -102,18 +102,19 @@ export class AttributeState {
         })
     }
 
-    @Action(AttributeCreate)
-    attributecreate(ctx : StateContext<AttributeStateModel>, action : AttributeCreate):Observable<any>{
-        return this.attribute.createAtribute(action.payload)        
+    @Action(CategotyCreate)
+    categorycreate(ctx : StateContext<CategoryStateModel>, action : CategotyCreate):Observable<any>{
+        return this.category.createCategory(action.payload)        
     }
 
-    @Action(AttributeEdit)
-    attributeedit(ctx : StateContext<AttributeStateModel>, action : AttributeEdit):Observable<any>{
-        return this.attribute.attributeedit(action.payload)
+    @Action(CategotyEdit)
+    categoryeedit(ctx : StateContext<CategoryStateModel>, action : CategotyEdit):Observable<any>{
+        return this.category.editCategory(action.payload)
     }
 
-    @Action(AttributeDelete)
-    attributedelete(ctx : StateContext<AttributeStateModel>, action : AttributeDelete):Observable<any>{
-        return this.attribute.attributedelete(action.payload)
+    @Action(CategotyDelete)
+    categorydelete(ctx : StateContext<CategoryStateModel>, action : CategotyDelete):Observable<any>{
+        return this.category.deleteCategory(action.payload)
     }
+
 }

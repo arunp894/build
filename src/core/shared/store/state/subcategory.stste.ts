@@ -1,13 +1,13 @@
-import { Action,  Selector, State, StateContext, Store } from "@ngxs/store";
-import { AttributeCreateModel } from "../../interface/attribute";
-import { Injectable } from "@angular/core";
-import { AttributeCreate, AttributeDelete, AttributeEdit, AttributeList, } from "../action/attribute.action";
-import { AttributeService } from "../../service/attribute.service";
-import { Observable, tap } from "rxjs";
+import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { NgxDatatable, Page } from "../../interface/ngxdatatable";
+import { Injectable } from "@angular/core";
+import { Observable, tap } from "rxjs";
+import { SubCategoryService } from "../../service/sub-category.service";
+import { SubcategoryList, SubcategoryCreate, SubcategoryEdit, SubcategoryDelete, GetCategpry } from "../action/subcategory.action";
 
-export interface AttributeStateModel{   
+export interface SubCategoryStateModel{
     table : NgxDatatable,
+    category : Array<any>
     filter : {
         page : number,
         page_size : number,
@@ -20,10 +20,11 @@ export interface AttributeStateModel{
     }
 }
 
-@State<AttributeStateModel>({
-    name: "attribute",
+@State<SubCategoryStateModel>({
+    name: "SubCategory",    
     defaults: {              
         table : new Page(),
+        category : [],
         filter : {
             page : 0,
             page_size : 10,
@@ -37,24 +38,29 @@ export interface AttributeStateModel{
     }
 })
 @Injectable()
-export class AttributeState {
+export class SubcategoryState { 
 
-    constructor(private store: Store, public attribute : AttributeService){ }
+    constructor(private store: Store, public category : SubCategoryService){ }
 
     @Selector()
-    static rows(state : AttributeStateModel){
+    static rows(state : SubCategoryStateModel){
         return state.table.rows
     }
     @Selector()
-    static table(state : AttributeStateModel){
+    static table(state : SubCategoryStateModel){
         return state.table
     }
     @Selector()
-    static form(state : AttributeStateModel){
+    static form(state : SubCategoryStateModel){
         return state.form
     }
     @Selector()
-    static pagination(state : AttributeStateModel): Array<number>{
+    static category(state : SubCategoryStateModel){
+        return state.category
+    }
+
+    @Selector()
+    static pagination(state : SubCategoryStateModel): Array<number>{
         const pagination = [];
         const totalPages = Math.ceil(state.table.totalElements / state.table.size); // Ensure we round up for total pages
         let currentPage = state.table.pageNumber;
@@ -76,8 +82,8 @@ export class AttributeState {
         return pagination;
     }
 
-    @Action(AttributeList)
-    attributelist(ctx : StateContext<AttributeStateModel>, action : AttributeList){        
+    @Action(SubcategoryList)
+    CategotyList(ctx : StateContext<SubCategoryStateModel>, action : SubcategoryList){        
         ctx.patchState({
             filter : {
                 ...ctx.getState().filter,
@@ -88,7 +94,7 @@ export class AttributeState {
             }
         })
         
-        return this.attribute.list(ctx.getState().filter).subscribe({
+        return this.category.list(ctx.getState().filter).subscribe({
             next : (data) => {
                 ctx.patchState({
                     table : {
@@ -102,18 +108,31 @@ export class AttributeState {
         })
     }
 
-    @Action(AttributeCreate)
-    attributecreate(ctx : StateContext<AttributeStateModel>, action : AttributeCreate):Observable<any>{
-        return this.attribute.createAtribute(action.payload)        
+    @Action(SubcategoryCreate)
+    categorycreate(ctx : StateContext<SubCategoryStateModel>, action : SubcategoryCreate):Observable<any>{
+        return this.category.createCategory(action.payload)        
     }
 
-    @Action(AttributeEdit)
-    attributeedit(ctx : StateContext<AttributeStateModel>, action : AttributeEdit):Observable<any>{
-        return this.attribute.attributeedit(action.payload)
+    @Action(SubcategoryEdit)
+    categoryeedit(ctx : StateContext<SubCategoryStateModel>, action : SubcategoryEdit):Observable<any>{
+        return this.category.editCategory(action.payload)
     }
 
-    @Action(AttributeDelete)
-    attributedelete(ctx : StateContext<AttributeStateModel>, action : AttributeDelete):Observable<any>{
-        return this.attribute.attributedelete(action.payload)
+    @Action(SubcategoryDelete)
+    categorydelete(ctx : StateContext<SubCategoryStateModel>, action : SubcategoryDelete):Observable<any>{
+        return this.category.deleteCategory(action.payload)
+    }
+
+    @Action(GetCategpry)
+    getcategory(ctx : StateContext<SubCategoryStateModel>, action : GetCategpry):Observable<any>{
+        return this.category.getcategory().pipe(
+            tap({
+                next : (value) => {
+                    ctx.patchState({
+                        category : value.data
+                    })
+                }
+            })
+        )
     }
 }

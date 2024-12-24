@@ -15,6 +15,18 @@ export const Side_menu : Array<Sidebar> = [
                 is_active : false,
                 link : '/attribute',
                 submenu : []
+            },
+            {
+                title : 'Category',
+                is_active : false,
+                link : '/category',
+                submenu : []
+            },
+            {
+                title : 'Sub Category',
+                is_active : false,
+                link : '/subcategory',
+                submenu : []
             }
         ]
     },
