@@ -27,6 +27,10 @@ export class AuthState {
       return !!state.access;
     }
     @Selector()
+    static user(state: AuthStateModel) {        
+      return state.user;
+    }
+    @Selector()
     static loading(state: AuthStateModel):boolean {        
       return state.loading;
     }
@@ -73,13 +77,7 @@ export class AuthState {
                         user : result.user,
                         loading : false
                     })
-                    Swal.fire({
-                        title: "Login",
-                        icon: "success",
-                        draggable: true
-                      }).then(() => {
-                          this.router.navigateByUrl('/')
-                      });
+                    this.router.navigateByUrl('/')                    
                 },
                 error : error => {                    
                     const state = ctx.getState();

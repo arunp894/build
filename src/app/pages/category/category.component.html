@@ -45,7 +45,16 @@
       (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
   <div class="offcanvas-body custom-input">
-    <form class="row g-3" [formGroup]="AddEditForm" (ngSubmit)="submit()">
+    <form class="row g-3" [formGroup]="AddEditForm" (ngSubmit)="submit()">       
+      <div>
+      @for (item of category(); track $index) {        
+        <label class="form-label">{{ ($index == 0)?'Category':'' }}</label>                
+          <ng-select #categorySelect  [searchable]="true" (change)="getcategory($event,$index)"  placeholder="Category" [multiple]="false">          
+            <ng-option *ngFor="let option of item" [value]="option.id">{{ option.name }}</ng-option>
+          </ng-select>         
+        }
+        <app-form-error-msg [touched]="AddEditForm.get('parent')?.touched" [errors]="AddEditForm.get('parent')?.errors || []"></app-form-error-msg>
+      </div>
       <div class="col-12">
         <label class="form-label">Name</label>
         <input class="form-control" formControlName="name" type="text" placeholder="Name">
@@ -59,7 +68,7 @@
           [errors]="AddEditForm.get('description')?.errors || []"></app-form-error-msg>
       </div>
       <div class="col-12">
-        <button class="btn btn-light me-2"  (click)="offcanvas.dismiss('Cross click')" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+        <button class="btn btn-light me-2" type="button" (click)="offcanvas.dismiss('Cross click')" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
         <button class="btn btn-primary" type="submit">Submit</button>
       </div>
     </form>

@@ -18,3 +18,7 @@ export class AttributeDelete{
     static readonly type = 'Attribute delete';
     constructor(public payload:any){}
 }
+
+export class AttributeGet{
+    static readonly type = 'Attribute get';
+}

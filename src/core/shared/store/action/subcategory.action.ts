@@ -19,6 +19,10 @@ export class SubcategoryDelete{
     constructor(public payload:any){}
 }
 export class GetCategpry{
-    static readonly type = 'Get category';
+    static readonly type = 'Get category list';
     constructor(){}
+}
+export class GetSubCategory{
+    static readonly type = 'Get subcategpry';
+    constructor(public payload:number){}
 }

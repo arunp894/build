@@ -1,18 +1,21 @@
 import { ApplicationConfig, inject, NgZone, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, withHashLocation } from '@angular/router';
 import { provideStore, select, Store } from '@ngxs/store';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AuthState } from '../core/shared/store/state/auth.state';
 import { HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { catchError, concatMap, Observable, retry, retryWhen, switchMap, tap, throwError } from 'rxjs';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ENV } from '../env';
 import { Logout, RefereshToken } from '../core/shared/store/action/auth.action';
 import Swal from 'sweetalert2'
 import { AttributeState } from '../core/shared/store/state/attribute.state';
 import { CategoryState } from '../core/shared/store/state/category.state';
 import { SubcategoryState } from '../core/shared/store/state/subcategory.stste';
+import { ProductState } from '../core/shared/store/state/product.state';
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
+import { provideToastr } from 'ngx-toastr';
 
 export let retryCount = 0;
 export const retryWaitMilliSeconds = 1000;
@@ -118,14 +121,19 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(withInterceptors([httpInterceptorFn])),
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()),
     provideAnimations(),
+    provideToastr(),
+    withNgxsReduxDevtoolsPlugin({
+        trace : true
+      }),
     provideStore([
       AuthState,
       AttributeState,
       CategoryState,
-      SubcategoryState
-    ]),
+      SubcategoryState,
+      ProductState
+    ]), 
     withNgxsStoragePlugin({
       keys : [
         AuthState

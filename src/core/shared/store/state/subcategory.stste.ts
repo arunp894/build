@@ -3,11 +3,12 @@ import { NgxDatatable, Page } from "../../interface/ngxdatatable";
 import { Injectable } from "@angular/core";
 import { Observable, tap } from "rxjs";
 import { SubCategoryService } from "../../service/sub-category.service";
-import { SubcategoryList, SubcategoryCreate, SubcategoryEdit, SubcategoryDelete, GetCategpry } from "../action/subcategory.action";
+import { SubcategoryList, SubcategoryCreate, SubcategoryEdit, SubcategoryDelete, GetCategpry, GetSubCategory } from "../action/subcategory.action";
 
 export interface SubCategoryStateModel{
     table : NgxDatatable,
     category : Array<any>
+    subcategory : Array<any>
     filter : {
         page : number,
         page_size : number,
@@ -25,6 +26,7 @@ export interface SubCategoryStateModel{
     defaults: {              
         table : new Page(),
         category : [],
+        subcategory : [],
         filter : {
             page : 0,
             page_size : 10,
@@ -57,6 +59,10 @@ export class SubcategoryState {
     @Selector()
     static category(state : SubCategoryStateModel){
         return state.category
+    }
+    @Selector()
+    static subcategory(state : SubCategoryStateModel){
+        return state.subcategory
     }
 
     @Selector()
@@ -93,8 +99,9 @@ export class SubcategoryState {
                 search : action.playload.hasOwnProperty('search')?action.playload['search']:ctx.getState().filter.search,
             }
         })
-        
-        return this.category.list(ctx.getState().filter).subscribe({
+        const currentState = { ...ctx.getState().filter };
+        currentState.page = currentState.page+1
+        return this.category.list(currentState).subscribe({
             next : (data) => {
                 ctx.patchState({
                     table : {
@@ -130,6 +137,18 @@ export class SubcategoryState {
                 next : (value) => {
                     ctx.patchState({
                         category : value.data
+                    })
+                }
+            })
+        )
+    }
+    @Action(GetSubCategory)
+    getsubcategory(ctx : StateContext<SubCategoryStateModel>, action : GetSubCategory):Observable<any>{
+        return this.category.getsubcategory(action.payload).pipe(
+            tap({
+                next : (value) => {
+                    ctx.patchState({
+                        subcategory : value.data
                     })
                 }
             })

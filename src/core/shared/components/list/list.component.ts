@@ -13,8 +13,10 @@ import Swal from 'sweetalert2';
   styleUrl: './list.component.scss'
 })
 export class ListComponent {
-  private store = inject(Store);
 
+  @ViewChild('table') table: any;
+
+  private store = inject(Store);
   columns = input.required<any>()
   action = input.required<any>
   Ngx_datatable = input.required<NgxDatatable>()
@@ -30,12 +32,20 @@ export class ListComponent {
   @ViewChild('empty') empty !: TemplateRef<any>;
   @ViewChild('actionTemplate') actionTemplate !: TemplateRef<any>;
   @ViewChild('category') category !: TemplateRef<any>;
+  @ViewChild('viewAttribute') viewAttribute !: TemplateRef<any>;
+  @ViewChild('parent_chain') parent_chain !: TemplateRef<any>;
+  @ViewChild('sno') sno !: TemplateRef<any>;
+  @ViewChild('images') images !: TemplateRef<any>;
   
   ngAfterViewInit(): void {
     this.template.set([
       { 'name' : 'emptyTemp', 'TemplateRef' : this.empty },
       { 'name' : 'actionTemplate', 'TemplateRef' : this.actionTemplate },
       { 'name' : 'category', 'TemplateRef' : this.category },
+      { 'name' : 'viewAttribute', 'TemplateRef' : this.viewAttribute },
+      { 'name' : 'parent_chain', 'TemplateRef' : this.parent_chain },
+      { 'name' : 'sno', 'TemplateRef' : this.sno },
+      { 'name' : 'images', 'TemplateRef' : this.images },
     ])
   }
   TemplateRef(name:string):any{
@@ -61,6 +71,14 @@ export class ListComponent {
   edit(row:any){
     this.editEvent.emit(row)
   }
+  onDetailToggle(event : Event) {
+    console.log('Detail Toggled', event);
+  }
+  toggleExpandRow(row : any) {
+    console.log('Toggled Expand Row!', row);
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
   delete(row:any){
     Swal.fire({
       title: "Are you sure?",
@@ -72,13 +90,8 @@ export class ListComponent {
       confirmButtonText: "Yes, delete it!"
     }).then((result) => {
       if (result.isConfirmed) {
-        this.deleteEvent.emit(row)
-        Swal.fire({
-          title: "Deleted!",        
-          icon: "success"
-        });
+        this.deleteEvent.emit(row)       
       }
-    });
-    this.deleteEvent.emit(row)
+    });    
   }
 }

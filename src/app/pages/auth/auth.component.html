@@ -40,9 +40,8 @@
                                 </div>
                                 <a class="link" (click)="ActiveForm.set(2)">Forgot password?</a>
                                 <button [disabled]="Form_loading()" class="btn btn-primary btn-block w-100" type="submit">
-                                <ng-content *ngIf="!Form_loading()">Sign in </ng-content>
-                                <ng-content *ngIf="Form_loading()">Loading ...</ng-content>
-                                    
+                                    <ng-content *ngIf="!Form_loading()">Sign in </ng-content>
+                                    <ng-content *ngIf="Form_loading()">Loading ...</ng-content>                                    
                                 </button>
                             </div>
                         </form>

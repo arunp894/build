@@ -1,3 +1,4 @@
 export const ENV = {
-    url : 'http://20.198.20.47/endpoints/'
+    //url : 'https://edms.ros.com.sg/api/'
+    url : 'https://20.198.20.47/api/endpoints/'
 }

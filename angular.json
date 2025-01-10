@@ -46,8 +46,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -63,7 +63,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "production"        
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -75,7 +75,10 @@
               "buildTarget": "build:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "server.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"

@@ -17,7 +17,9 @@ export class SubCategoryService {
   getcategory():Observable<any>{
     return this.http.post('categories/list/',{})
   }
-
+  getsubcategory(payload : number):Observable<any>{
+    return this.http.post('categories/subcategory/list/',{category : payload})
+  }
   createCategory(playload : SubcategoryModel):Observable<any>{
     return this.http.post('categories/subcategory/create/',playload)
   }

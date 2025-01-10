@@ -1,4 +1,4 @@
-<ngx-datatable [rowHeight]="'auto'" 
+<ngx-datatable #table [rowHeight]="'auto'" 
 [columnMode]="'force'" 
 [loadingIndicator]="true"
 [externalPaging]="true"
@@ -10,6 +10,47 @@
 [columns]="columns()" 
 [rows]="Ngx_datatable().rows"
 [count]="Ngx_datatable().totalElements">
+
+<ngx-datatable-row-detail [rowHeight]="500" #myDetailRow (toggle)="onDetailToggle($event)">
+  <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card-block row emphasis-table">
+          <div class="col-sm-12 col-lg-12 col-xl-12">
+            <div class="table-responsive custom-scrollbar">
+              <table class="table table-striped-columns">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Value</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of row.attribute_values; track item.name; let idx = $index;) {
+                    <tr>
+                      <th scope="row">{{ idx+1 }}</th>
+                      <td>{{ item.attribute.name }}</td>
+                      <td>
+                        @if(item.attribute.field_type == 'file'){                       
+                          <a [href]="item.file" target="_blank" rel="noopener noreferrer">{{ item.attribute.name }}</a>
+                        }@else {
+                          {{ item.value }}              
+                        }
+                      </td>    
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+          
+  </ng-template>
+</ngx-datatable-row-detail>
+
 @for (item of columns(); track $index) {
     @if( item?.cellTemplate ){
         <ngx-datatable-column [name]="item.name" [prop]="item.prop" [cellTemplate]="TemplateRef(item.cellTemplate)"></ngx-datatable-column>
@@ -51,6 +92,9 @@
 <ng-template #empty let-row="row" let-value="value" ngx-datatable-cell-template>
     {{ value }}
 </ng-template>
+<ng-template #sno let-row="row" let-index="rowIndex" let-value="value" ngx-datatable-cell-template>
+  {{ index+1 }}
+</ng-template>
 <ng-template #actionTemplate let-row="row" let-value="value" ngx-datatable-cell-template>
     <div class="d-flex gap-1">
       <button (click)="edit(row)" class="btn-pill btn-outline-primary  border border-primary"><i class="fa fa-edit" aria-hidden="true"></i></button>
@@ -58,5 +102,26 @@
   </div>  
 </ng-template>
 <ng-template #category let-row="row" let-value="value" ngx-datatable-cell-template>
-  {{ value.name }}
+  {{ value.name }}  
 </ng-template>
+<ng-template #images let-row="row" let-value="value" ngx-datatable-cell-template>
+  @if(value.length){   
+    <img class="img-fluid img-40 rounded-circle me-2" [src]="value[0].image" alt="user">
+  }
+</ng-template>
+<ng-template #parent_chain let-row="row" let-value="value" ngx-datatable-cell-template>
+  @for(item of value; track $index; let i = $index; let last = $last){    
+    {{ item.name }}<br>   
+  }
+</ng-template>
+<ng-template #viewAttribute let-row="row" let-value="value" let-expanded="expanded" ngx-datatable-cell-template>
+  @if(row.attribute_values.length > 0){
+    <a (click)="toggleExpandRow(row)">
+      <i class="fa fa-eye" aria-hidden="true"></i>
+    </a>
+  }
+  @else{
+    No attributes
+  }
+</ng-template>
+

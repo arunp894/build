@@ -1,10 +1,11 @@
 import { Action,  Selector, State, StateContext, Store } from "@ngxs/store";
 import { AttributeCreateModel } from "../../interface/attribute";
 import { Injectable } from "@angular/core";
-import { AttributeCreate, AttributeDelete, AttributeEdit, AttributeList, } from "../action/attribute.action";
+import { AttributeCreate, AttributeDelete, AttributeEdit, AttributeGet, AttributeList, } from "../action/attribute.action";
 import { AttributeService } from "../../service/attribute.service";
 import { Observable, tap } from "rxjs";
 import { NgxDatatable, Page } from "../../interface/ngxdatatable";
+import Swal from "sweetalert2";
 
 export interface AttributeStateModel{   
     table : NgxDatatable,
@@ -18,6 +19,7 @@ export interface AttributeStateModel{
         submitted : boolean,
         loading : boolean,        
     }
+    list : Array<any>
 }
 
 @State<AttributeStateModel>({
@@ -33,7 +35,8 @@ export interface AttributeStateModel{
         form : {
             submitted : false,
             loading : false,        
-        }     
+        },
+        list : []
     }
 })
 @Injectable()
@@ -53,6 +56,11 @@ export class AttributeState {
     static form(state : AttributeStateModel){
         return state.form
     }
+    @Selector()
+    static list(state : AttributeStateModel){
+        return state.list
+    }
+
     @Selector()
     static pagination(state : AttributeStateModel): Array<number>{
         const pagination = [];
@@ -87,8 +95,9 @@ export class AttributeState {
                 search : action.playload.hasOwnProperty('search')?action.playload['search']:ctx.getState().filter.search,
             }
         })
-        
-        return this.attribute.list(ctx.getState().filter).subscribe({
+        const currentState = { ...ctx.getState().filter };
+        currentState.page = currentState.page+1
+        return this.attribute.list(currentState).pipe(tap({
             next : (data) => {
                 ctx.patchState({
                     table : {
@@ -99,21 +108,64 @@ export class AttributeState {
                     }
                 })
             }
-        })
+        }))
     }
 
     @Action(AttributeCreate)
     attributecreate(ctx : StateContext<AttributeStateModel>, action : AttributeCreate):Observable<any>{
-        return this.attribute.createAtribute(action.payload)        
+        action.payload.values = Array.isArray(action.payload.values) ? action.payload.values.join(',') : '';
+        return this.attribute.createAtribute(action.payload).pipe(
+            tap({
+                next : (value) => {
+                    this.store.dispatch(new AttributeList({pageNumber : 0}));
+                }
+            })
+        )       
     }
 
     @Action(AttributeEdit)
     attributeedit(ctx : StateContext<AttributeStateModel>, action : AttributeEdit):Observable<any>{
-        return this.attribute.attributeedit(action.payload)
+        action.payload.values = Array.isArray(action.payload.values) ? action.payload.values.join(',') : '';
+        return this.attribute.attributeedit(action.payload).pipe(
+            tap({
+                next : (value) => {
+                    this.store.dispatch(new AttributeList({}));
+                }
+            })
+        )
     }
 
     @Action(AttributeDelete)
     attributedelete(ctx : StateContext<AttributeStateModel>, action : AttributeDelete):Observable<any>{
-        return this.attribute.attributedelete(action.payload)
+        return this.attribute.attributedelete(action.payload).pipe(
+            tap({
+                next : (value) => {
+                    Swal.fire({
+                        title: "Deleted!",        
+                        icon: "success"
+                    });
+                    this.store.dispatch(new AttributeList({}));
+                },
+                error : (error) => {
+                    Swal.fire({
+                        title: error.error.message,        
+                        icon: "error"
+                    });
+                }
+            }) 
+        )
+    }
+
+    @Action(AttributeGet)
+    attributeget(ctx : StateContext<AttributeStateModel>, action : AttributeGet):Observable<any>{        
+        return this.attribute.attributeget().pipe(
+            tap({
+                next : (value) => {                    
+                    ctx.patchState({
+                        list : value.data
+                    })
+                }
+            })
+        )
     }
 }

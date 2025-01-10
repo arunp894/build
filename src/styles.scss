@@ -1,3 +1,5 @@
+@import 'ngx-toastr/toastr';
+
 @import "../public/assets/css/vendors/bootstrap.css";
 @import "../public/assets/css/style.css";
 @import "../public/assets/css/vendors/jquery.dataTables.css";
@@ -19,6 +21,7 @@ form .ng-invalid.ng-touched{
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/offcanvas';
 @import "@ng-select/ng-select/themes/default.theme.css";
+@import 'ngx-toastr/toastr-bs5-alert';
 
 .ngx-datatable{
     border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;

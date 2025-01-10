@@ -9,6 +9,11 @@ export class CategotyCreate{
     constructor(public payload:any){}
 }
 
+export class GetCategory{
+    static readonly type = 'Get Category';
+    constructor(public payload:any){}
+}
+
 export class CategotyEdit{
     static readonly type = 'Categoty Edit';
     constructor(public payload:any){}

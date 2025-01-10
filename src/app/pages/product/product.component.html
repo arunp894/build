@@ -1,1 +1,138 @@
-<p>product works!</p>
+<div class="container-fluid">
+    <div class="page-title">
+      
+    </div>
+  </div>
+  <div class="container-fluid datatable-init">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-sm-10">
+                      <form [formGroup]="searchForm">
+                        <div class="row">                          
+                          <div class="col-sm-2">
+                            <input class="form-control" type="text" formControlName="name" placeholder="Name">
+                          </div>
+                          <div class="col-sm-1">
+                            <button class="btn btn-primary" (click)="search()"><i class="fa fa-search"></i></button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary" (click)="openEnd(content)"><i class="fa fa-plus"
+                            aria-hidden="true"></i>Add</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <app-list [columns]="columns()" [Ngx_datatable]="table()" [pagination]="pagination()"
+                        (editEvent)="edit($event)" (deleteEvent)="delete($event)" (footerpagesetEvent)="setPage($event)"
+                        (onSortEvent)="setPage($event)"></app-list>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <ng-template #content let-offcanvas>
+    <div class="offcanvas-header pb-0">
+      <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Product</h5>
+      <button class="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Close"
+        (click)="offcanvas.dismiss('Cross click')"></button>
+    </div>
+    <div class="offcanvas-body custom-input">
+      <form #productform class="form " [formGroup]="AddEditForm" (ngSubmit)="submit()">     
+        <div class="card-body custom-input">
+          <div class="row">
+            <div class="col">
+              
+              <div class="mb-3 row">
+                <label class="col-sm-3">Product Name</label>
+                <div class="col-sm-7">
+                  <input class="form-control" formControlName="name" type="text" placeholder="Product Name" name="name">
+                  <app-form-error-msg [touched]="AddEditForm.get('name')?.touched" [errors]="AddEditForm.get('name')?.errors || []"></app-form-error-msg>
+                </div>
+              </div>
+              @for (item of category(); track $index) {        
+              <div class="mb-3 row">
+                <label class="col-sm-3">{{ ($index == 0)?'Category':'' }}</label>
+                <div class="col-sm-7">
+                  <ng-select #categorySelect (change)="getcategory($event,$index)"  [searchable]="true"  placeholder="Category" [multiple]="false">
+                    <ng-option *ngFor="let option of item" [value]="option.id">{{ option.name }}</ng-option>
+                  </ng-select>                  
+                </div>
+              </div>             
+            }
+              <app-form-error-msg [touched]="AddEditForm.get('category')?.touched" [errors]="AddEditForm.get('category')?.errors || []"></app-form-error-msg>
+              <div class="mb-3 row">
+                <label class="col-sm-3">Description</label>
+                <div class="col-sm-7">
+                  <textarea class="form-control" formControlName="description" type="text" placeholder="Description" name="description"></textarea>
+                  <app-form-error-msg [touched]="AddEditForm.get('description')?.touched" [errors]="AddEditForm.get('description')?.errors || []"></app-form-error-msg>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-3">Product Image</label>
+                <div class="col-sm-7" style="display: flex;">
+                  @if(EditData){
+                    @if(EditData.images.length > 0 && EditData.images[0].image){
+                      <img class="img-fluid" style="width: 50px;" [src]="EditData.images[0].image" alt="background">
+                    }
+                  }
+                    <input class="form-control" #image type="file" formControlName="image" placeholder="Name" name="image">
+                  
+                  <app-form-error-msg [touched]="AddEditForm.get('image')?.touched" [errors]="AddEditForm.get('image')?.errors || []"></app-form-error-msg>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-3">Product Fields</label>
+                <div class="col-sm-7">
+                 
+                  <ng-select (change)="attributerender($event)" formControlName="selectattribute" [searchable]="true" placeholder="Attribute" [multiple]="true">                
+                    <ng-option *ngFor="let option of AttributeList()" [value]="option.id">{{ option.name }}</ng-option>
+                  </ng-select>
+                  <app-form-error-msg [touched]="AddEditForm.get('attributes')?.touched" [errors]="AddEditForm.get('attributes')?.errors || []"></app-form-error-msg>
+                </div>
+              </div>
+              <ng-container formArrayName="attributes">      
+                @if(formattribute.controls.length) {
+                  <div class="mb-3 row">
+                    <h3 class="f-w-600">Fields</h3>
+                  </div>
+                }
+                <ng-container *ngFor="let lessonForm of formattribute.controls; let i = index">                  
+                  <div class="mb-3 row" [formGroupName]="i">
+                    <label class="col-sm-3">{{ AddEditForm.controls.attributes.controls[i].controls.name.value }}</label>
+                    <div class="col-sm-7" style="display: flex;">
+                      @if(getType(i) == 'select' || getType(i) == 'multiselect'){
+                        <ng-select [searchable]="true" style="width: 100%;" formControlName="value" [placeholder]="AddEditForm.controls.attributes.controls[i].controls.name.value" [multiple]="false">
+                          <ng-option *ngFor="let option of AddEditForm.controls.attributes.controls[i].controls.values.value" [value]="option">{{ option }}</ng-option>
+                        </ng-select>       
+                      }@else {
+                        @if(getType(i) == 'file' && EditData && EditData.attribute_values[i]){
+                          @if(EditData.attribute_values[i].file){
+                            <img class="img-fluid" style="width: 50px;" [src]="EditData.attribute_values[i].file" alt="background">
+                          }
+                        }
+                        <input class="form-control" formControlName="value" [type]="getType(i)" [name]="'attributes['+i+'][value]'" [placeholder]="AddEditForm.controls.attributes.controls[i].controls.name.value">
+                      }
+                    </div>
+                  </div>                                 
+                </ng-container>
+              </ng-container>
+              <div class="mb-3 row">
+                <div class="col-12">
+                  <button class="btn btn-light me-2" type="button" (click)="offcanvas.dismiss('Cross click')" data-bs-dismiss="offcanvas" aria-label="Close">Cancel</button>
+                  <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>                 
+      </form>
+    </div>
+  </ng-template>

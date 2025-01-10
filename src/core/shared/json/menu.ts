@@ -5,7 +5,7 @@ export const Side_menu : Array<Sidebar> = [
         title : 'dashboard',   
         menus : [
             {
-                title : 'DashBoad',
+                title : 'Dashboard',
                 is_active : false,
                 link : '',
                 submenu :[]
@@ -22,16 +22,19 @@ export const Side_menu : Array<Sidebar> = [
                 link : '/category',
                 submenu : []
             },
+            // {
+            //     title : 'Sub Category',
+            //     is_active : false,
+            //     link : '/subcategory',
+            //     submenu : []
+            // },
             {
-                title : 'Sub Category',
+                title : 'Product',
                 is_active : false,
-                link : '/subcategory',
+                link : '/product',
                 submenu : []
             }
         ]
     },
-    {
-        title : 'Attribute',
-        menus : []
-    }
+    
 ]

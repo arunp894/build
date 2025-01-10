@@ -1,0 +1,24 @@
+from(actionsToDispatch).pipe(
+  concatMap((action: any) => this.store.dispatch(action))      
+).subscribe({
+  complete: () => {
+    // Option 1: Using ChangeDetectorRef
+    this.changeDetectorRef.detectChanges();
+    const categorySelectArray = this.categorySelects.toArray();
+    parent_chain.forEach((element: any, index: number) => {
+      categorySelectArray[index].writeValue(element.id);
+    });
+
+    // Option 2: Using NgZone
+    this.ngZone.onMicrotaskEmpty.pipe(take(1)).subscribe(() => {
+      const categorySelectArray = this.categorySelects.toArray();
+      parent_chain.forEach((element: any, index: number) => {
+        categorySelectArray[index].writeValue(element.id);
+      });
+    });
+
+    // Option 3: Using ViewChildren with static: false
+    // In your component class:
+    // @ViewChildren('categorySelect', { static: false }) categorySelects: QueryList<any>;
+  }
+});

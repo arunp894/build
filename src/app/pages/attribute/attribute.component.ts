@@ -3,13 +3,13 @@ import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngxs/store';
-import { AttributeCreate, AttributeEdit, AttributeList } from '../../../core/shared/store/action/attribute.action';
+import { AttributeCreate, AttributeDelete, AttributeEdit, AttributeList } from '../../../core/shared/store/action/attribute.action';
 import { FormErrorMsgComponent } from "../../../core/shared/components/form-error-msg/form-error-msg.component";
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AttributeState } from '../../../core/shared/store/state/attribute.state';
 import { Page } from '../../../core/shared/interface/page';
 import { ListComponent } from "../../../core/shared/components/list/list.component";
-import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-attribute',
@@ -23,6 +23,7 @@ export class AttributeComponent {
   page = new Page();
   private offcanvasService = inject(NgbOffcanvas);
   private store = inject(Store);
+  private toastr = inject(ToastrService)
   rows = select(AttributeState.rows)
   table = select(AttributeState.table)
   pagination = select(AttributeState.pagination)
@@ -33,7 +34,7 @@ export class AttributeComponent {
 
   AddEditForm = new FormGroup({
       name : new FormControl('',[Validators.required]),
-      id : new FormControl(''),
+      attribute_id : new FormControl(''),
       field_type : new FormControl('',[Validators.required]),
       values : new FormArray([])
   })
@@ -42,7 +43,7 @@ export class AttributeComponent {
     name : new FormControl(''),
   })
   columns : WritableSignal<Array<{ name : string, prop:string,cellTemplate?:string }>> = signal([
-    { name : '#', prop : 'id' },
+    { name : 'Sno', prop : 'id', cellTemplate : 'sno' },
     { name : 'Name', prop : 'name' },
     { name : 'Field Type', prop : 'field_type' },
     { name : 'Values', prop : 'values' },
@@ -75,54 +76,43 @@ export class AttributeComponent {
     this.valueArray.removeAt(index);
   }
   openEnd(content: TemplateRef<any>) {
-    this.AddEditForm.patchValue({
-      name : '',
-      id : '',
-      field_type : '',   
-      values : []
-    })
+    this.AddEditForm.reset()
+    this.valueArray.clear()
 		this.offcanvasService.open(content, { position: 'end', backdrop : 'static' });
 	}
   edit(data : any){    
-    const parsedValues = data.values ?JSON.parse(data.values.replace(/'/g, '"')):[]
-    parsedValues.forEach((value: string) => { 
+    this.AddEditForm.reset()
+    this.valueArray.clear()
+    data.values.forEach((value: string) => { 
       this.valueArray.push(new FormControl(value, Validators.required));
     });
     this.AddEditForm.patchValue({
       name : data.name,
-      id : data.id,
+      attribute_id : data.id,
       field_type : data.field_type,     
     })
     this.offcanvasService.open(this.content, { position: 'end', backdrop : 'static' });
   }
-  delete(data : any){
-    
+  deleterow(data : any){
+    this.store.dispatch(new AttributeDelete(data.id))    
   }
 
   submit(){
     if(this.AddEditForm.valid){
     let Action = new AttributeCreate(this.AddEditForm.value)
-    if(this.AddEditForm.controls.id.value){
+    if(this.AddEditForm.controls.attribute_id.value){
       Action = new AttributeEdit(this.AddEditForm.value)
     }
       this.store.dispatch(Action).subscribe({
         next : (value) => {
-          if(this.AddEditForm.controls.id.value){            
-            Swal.fire({
-              title: "Updated",
-              icon: "success",
-              draggable: true
-            })
+          if(this.AddEditForm.controls.attribute_id.value){        
+            this.toastr.success('Updated');                      
+            this.offcanvasService.dismiss(this.content);
           }else{
-            this.AddEditForm.reset()
-            this.page.pageNumber = 0;
+            this.toastr.success('Created');                    
+            this.AddEditForm.reset()            
           }
-          this.store.dispatch(new AttributeList(this.page))
-          Swal.fire({
-            title: "Created",
-            icon: "success",
-            draggable: true
-          }) 
+          
         },
         complete : ()=>{
           

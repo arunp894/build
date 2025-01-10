@@ -54,8 +54,8 @@ export class SubcategoryComponent {
   })
 
   ngAfterContentInit(): void {      
-      this.store.dispatch(new SubcategoryList({pageNumber : 0}))
-    }
+    this.store.dispatch(new SubcategoryList({pageNumber : 0}))
+  }
 
   openEnd(content: TemplateRef<any>) {
     this.AddEditForm.patchValue({
@@ -74,8 +74,8 @@ export class SubcategoryComponent {
 		this.offcanvasService.open(this.content, { position: 'end', backdrop : 'static' });
   }
   setPage(pageInfo : any) {
-      this.store.dispatch(new SubcategoryList(pageInfo))
-    }
+    this.store.dispatch(new SubcategoryList(pageInfo))
+  }
   search(){
     this.store.dispatch(new SubcategoryList({
           search : this.searchForm.value

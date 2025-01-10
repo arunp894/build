@@ -19,10 +19,15 @@ export class AttributeService {
   }
 
   attributeedit(payload : AttributeCreateModel):Observable<{ id : number}> {
-    return this.http.post<{ id : number}>('attributes/update/'+payload.id+'/',payload)
+    return this.http.post<{ id : number}>('attributes/update/',payload)
   }
 
   attributedelete(payload : AttributeCreateModel):Observable<{ id : number}> {
-    return this.http.post<{ id : number}>('attributes/update/'+payload.id+'/',payload)
+    return this.http.post<{ id : number}>('attributes/delete/',{ attribute_id : payload })
   }
+
+  attributeget():Observable<any> {
+    return this.http.post<any>('attributes/list/',{})
+  }
+
 }

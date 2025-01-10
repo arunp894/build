@@ -1,0 +1,7 @@
+{
+    "/api": {
+      "target": "https://edms.ros.com.sg",
+      "secure": true,
+      "changeOrigin": true
+    }
+  }
